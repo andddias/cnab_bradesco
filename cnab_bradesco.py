@@ -1,3 +1,4 @@
+from decimal import Decimal
 import os
 import csv
 
@@ -29,7 +30,7 @@ pst_data_credito = [145, 153]
 
 def apenas_duas_casas_decimais(vr_ignorar):
     valor_split = str(vr_ignorar).split('.')
-    truncado = float(valor_split[0] + '.' + valor_split[1][0:2])
+    truncado = Decimal(valor_split[0] + '.' + valor_split[1][0:2])
     return truncado
 
 
@@ -73,7 +74,7 @@ for arquivo_cnab in lista_de_arquivos:
                 #     or (linhas_arquivo[idx][pst_conta_recebimento[0]:pst_conta_recebimento[1]] == conta_fida)):
                 conta_recebimento = linhas_arquivo[idx][pst_conta_recebimento[0]:pst_conta_recebimento[1]]
                 nosso_numero_y = linhas_arquivo[idx][pst_numero_boleto_seg_y[0]:pst_numero_boleto_seg_y[1]]
-                percentual = (float(linhas_arquivo[idx][pst_percentual[0]:pst_percentual[1]])) / 100
+                percentual = (Decimal(linhas_arquivo[idx][pst_percentual[0]:pst_percentual[1]])) / 100
 
                 # Teste para verificar se é a ultima rateio do bloco de seguimento y
                 if linhas_arquivo[idx + 1][pst_seguimento[0]:pst_seguimento[1]] == seguimento_t:
@@ -98,7 +99,7 @@ for arquivo_cnab in lista_de_arquivos:
             if linhas_arquivo[idx][pst_tipo[0]:pst_tipo[1]] == tipo_pagamento \
                     and linhas_arquivo[idx][pst_seguimento[0]:pst_seguimento[1]] == seguimento_t:
                 nosso_numero_t = linhas_arquivo[idx][pst_numero_boleto_seg_t[0]:pst_numero_boleto_seg_t[1]]
-                valor = float(linhas_arquivo[idx + 1][pst_valor[0]:pst_valor[1]]) / 100
+                valor = Decimal(linhas_arquivo[idx + 1][pst_valor[0]:pst_valor[1]]) / 100
                 data_credito = linhas_arquivo[idx + 1][pst_data_credito[0]:pst_data_credito[1]]
                 # Formatando data de credito
                 data_credito = data_credito[0:2] + '/' + data_credito[2:4] + '/' + data_credito[4:8]
@@ -134,7 +135,7 @@ for arquivo_cnab in lista_de_arquivos:
                     # diferenca_rateio = apenas_duas_casas_decimais(vr_rateio - soma_rateio)
                     diferenca_rateio = vr_rateio - soma_rateio
                     # Adicionando diferença na lista de titulos validos no item marcado como True para ultimo rateio
-                    titulos_validos[idx]['diferenca_rateio'] = round(diferenca_rateio, 2)
+                    titulos_validos[idx]['diferenca_rateio'] = diferenca_rateio
                 else:
                     titulos_validos[idx]['diferenca_rateio'] = 0
 
@@ -178,7 +179,7 @@ for arquivo_cnab in lista_de_arquivos:
         for chave, valor in dicionario_soma_cfoab.items():
             result1, result2 = chave
             # O valor final está sendo arredondado em 2 casa decimais
-            result3 = round(valor, 2)
+            result3 = valor
             tupla_resultados_finais = ('CFOAB', result2, result1, result3)
             lista_final.append(tupla_resultados_finais)
             # prin(tupla_resultados_finais)
@@ -187,7 +188,7 @@ for arquivo_cnab in lista_de_arquivos:
         for chave, valor in dicionario_soma_fida.items():
             result1, result2 = chave
             # O valor final está sendo arredondado em 2 casa decimais
-            result3 = round(valor, 2)
+            result3 = valor
             tupla_resultados_finais = ('FIDA', result2, result1, result3)
             lista_final.append(tupla_resultados_finais)
             # print(tupla_resultados_finais)
